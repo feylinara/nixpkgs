@@ -10,6 +10,15 @@ let
     url = "https://web.archive.org/web/20220323041006/https://nominatim.org/data/country_grid.sql.gz";
     sha256 = "sha256-/mY5Oq9WF0klXOv0xh0TqEJeMmuM5QQJ2IxANRZd4Ek=";
   };
+  py = python3.withPackages (ps: with ps; [
+      pyyaml
+      python-dotenv
+      psycopg2
+      psutil
+      jinja2
+      pyicu
+      datrie
+  ]);
 in
 stdenv.mkDerivation rec {
   pname = "nominatim";
@@ -36,21 +45,11 @@ stdenv.mkDerivation rec {
     zlib
     expat
     boost
-    python3
+    py
     # python3Packages.pylint  # We don't want to run pylint because the package could break on pylint bumps which is really annoying.
     # python3Packages.pytest  # disabled since I can't get it to run tests anyway
     # python3Packages.behave  # disabled since I can't get it to run tests anyway
     postgresql_12
-  ];
-
-  propagatedBuildInputs = with python3Packages; [
-    pyyaml
-    python-dotenv
-    psycopg2
-    psutil
-    jinja2
-    pyicu
-    datrie
   ];
 
   postPatch = ''
